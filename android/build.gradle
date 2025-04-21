@@ -1,0 +1,41 @@
+buildscript {
+    ext.kotlin_version = '1.8.22' // ใช้เวอร์ชัน Kotlin ที่เข้ากันได้กับ Flutter
+    ext {
+        flutter = [
+            compileSdkVersion: 35 // ✅ เพิ่มตรงนี้
+        ]
+    }
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal() // เพิ่ม repository นี้เพื่อความครอบคลุม
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0' // ใช้เวอร์ชันที่เสถียร
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // เพิ่ม classpath อื่นๆ ที่จำเป็น เช่น Google Services (หากใช้ Firebase)
+    }
+}
+
+plugins {
+    id 'com.android.application' version '8.1.0' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.22' apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(':app') // ควรย้ายเข้ามาในบล็อกเดียวกัน
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}
